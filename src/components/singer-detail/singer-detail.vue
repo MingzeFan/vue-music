@@ -8,7 +8,7 @@
 import { mapGetters } from 'vuex';
 import { getSingerDetail } from 'api/singer'
 import { ERR_OK } from 'api/config'
-import { createSong } from 'common/js/song'
+import { createSong, isVaildMusic, processSongsUrl } from 'common/js/song'
 import MusicList from '../music-list/music-list'
 export default {
   data() {
@@ -42,8 +42,12 @@ export default {
         return
       }
       getSingerDetail(this.singer.id).then(res => {
+        console.log(res.data.list)
         if (res.code === ERR_OK) {
-          this.songs = this._normalizeSongs(res.data.list)
+          processSongsUrl(this._normalizeSongs(res.data.list)).then((songs) => {
+            this.songs = songs
+          })
+          // this.songs = this._normalizeSongs(res.data.list)
           console.log(this.songs)
         }
       })
@@ -52,7 +56,7 @@ export default {
       let result = []
       list.forEach(item => {
         let {musicData} = item
-        if (musicData.songid && musicData.albummid) {
+        if (isVaildMusic(musicData)) {
           result.push(createSong(musicData))
         }
       })
@@ -66,7 +70,7 @@ export default {
 @import '~common/stylus/variable.styl'
 
 .slide-enter-active, .slide-leave-active
-    transition: all 0.3s
+  transition: all 0.3s
 .slide-enter, .slide-leave-to
-    transform: translate3d(100%, 0, 0)
+  transform: translate3d(100%, 0, 0)
 </style>

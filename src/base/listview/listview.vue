@@ -91,6 +91,9 @@ export default {
       let anchorIndex = parseInt(this.touch.anchorIndex) + delta // parseInt解析字符串，返回整数
       this._scrollTo(anchorIndex)
     },
+    refresh () {
+      this.$refs.listview.refresh()
+    },
     //监听滚动事件，获取y轴的实时位置
     scroll(pos) {
       this.scrollY = pos.y
